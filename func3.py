@@ -60,7 +60,7 @@ print("------continue구문------")
 for i in lst:
     if i % 2 == 0 :
         continue
-    print("Item:{0}".format(i))
+    print("Item:{0}".format(i)) #파라미터 넘기는 파이선 방식...파라미터 넘기는 방법 찾아볼것
 
 print("----------수열함수----------")
 print(list(range(2000,2024))) # 2024앞까지...생성함..
@@ -68,3 +68,9 @@ print(list(range(1,32)))# 1~31까지생성..
 
 for i in range(5): #수동으로 5번돔..
     print(i)
+
+print("--------리스트 함축--------")
+lst = list(range(1,11))
+print([i**2 for i in lst if i>5])
+fruits = ("apple", "orange", "kiwi")
+print([len(i) for i in fruits])
