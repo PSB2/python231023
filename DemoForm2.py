@@ -4,6 +4,11 @@ from PyQt5.QtWidgets import *
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QWidget
 
+#웹서버에 요청
+import requests
+#크롤링
+from bs4 import BeautifulSoup
+
 #디자인 파일 로딩(파일명 변경.)
 form_class = uic.loadUiType("DemoForm2.ui")[0]
 #폼 클래스 정의(QMainWindow)
@@ -14,12 +19,34 @@ class DemoForm(QMainWindow, form_class):
         self.setupUi(self)
     #슬롯 메소드
     def firstClick(self):
-        self.label.setText("첫번째 버튼 클릭")   
+
+        url = "https://www.daangn.com/fleamarket/"
+        response =requests.get(url)
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        #<div class속성 딕셔너리>
+        #파일에 저장
+        f = open("c:\\work\\dangn.txt","wt", encoding="utf-8")
+        posts = soup.find_all("div", attrs={"class":"card-desc"}) #div 태그 안의 class가 card-desc인거 찾아라..
+        for post in posts:
+            title = post.find("h2", attrs={"class":"card-title"}) #h2태그의 클래스가 카드 클래스인거 가져오기..
+            price = post.find("div", attrs={"class":"card-price"})
+            addr = post.find("div", attrs={"class":"card-region-name"})
+            title = title.text.strip().replace("\n","")
+            price = price.text.strip().replace("\n","")
+            addr = addr.text.strip().replace("\n","")
+            print("{0}, {1}, {2}".format(title, price, addr))
+            #f를 붙이고 변수명 넘기기
+            f.write(f"{title},{price}, {addr}\n") # f는 포맷, 파일의 약자.. 이렇게 약어로 많이씀
+            
+        f.close()    
+
+        self.label.setText("당근 크롤링 완료~~~")   
     def secondClick(self):
         self.label.setText("두번째 버튼 클릭 ~~~")  
     def thirdClick(self):
         self.label.setText("세번째 버튼 클릭 ~~~~~~~~~~")    
-               
+
 #직접 실행했는지 여부(진입점 체크)
 if __name__=="__main__":
     app = QApplication(sys.argv)
